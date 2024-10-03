@@ -53,7 +53,7 @@ public class FilmControllerTests {
         validFilm.setReleaseDate(LocalDate.parse("1800-10-14"));
         validFilm.setDuration(100L);
 
-        assertThrows(ValidationException.class,() -> {
+        assertThrows(ValidationException.class, () -> {
             filmController.validate(validFilm);
         });
     }
@@ -68,7 +68,7 @@ public class FilmControllerTests {
         validFilm.setReleaseDate(LocalDate.parse("1999-10-14"));
         validFilm.setDuration(100L);
 
-        assertThrows(ValidationException.class,() -> {
+        assertThrows(ValidationException.class, () -> {
             filmController.validate(validFilm);
         });
     }
@@ -83,7 +83,7 @@ public class FilmControllerTests {
         validFilm.setReleaseDate(LocalDate.parse("1999-10-14"));
         validFilm.setDuration(-100L);
 
-        assertThrows(ValidationException.class,() -> {
+        assertThrows(ValidationException.class, () -> {
             filmController.validate(validFilm);
         });
     }

@@ -90,7 +90,7 @@ public class FilmController {
         }
 
         // продолжительность фильма должна быть положительным числом
-        if (film.getDuration() <= 0 ) {
+        if (film.getDuration() <= 0) {
             throw new ValidationException("Ошибка валидации - продолжительность должна быть положительным числом");
         }
     }
