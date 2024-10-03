@@ -26,6 +26,7 @@ public class UserControllerTests {
         userController.validate(validUser);
     }
 
+
     //Электронная почта должна содержать символ @
     @Test
     void checkValidationEmail() {

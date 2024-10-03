@@ -5,11 +5,9 @@ import ru.yandex.practicum.filmorate.controller.FilmController;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 
-import java.time.Duration;
 import java.time.LocalDate;
 
-import static java.time.temporal.ChronoUnit.MINUTES;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class FilmControllerTests {
 
@@ -23,7 +21,7 @@ public class FilmControllerTests {
         validFilm.setName("Matrix");
         validFilm.setDescription("Matrix.Part I");
         validFilm.setReleaseDate(LocalDate.parse("1999-10-14"));
-        validFilm.setDuration(Duration.of(90, MINUTES));
+        validFilm.setDuration(100L);
 
         filmController.validate(validFilm);
     }
@@ -36,7 +34,7 @@ public class FilmControllerTests {
         validFilm.setName("Matrix");
         validFilm.setDescription("Matrix.Part I");
         validFilm.setReleaseDate(LocalDate.parse("1800-10-14"));
-        validFilm.setDuration(Duration.of(90, MINUTES));
+        validFilm.setDuration(100L);
 
         assertThrows(ValidationException.class, () -> {
             filmController.validate(validFilm);
@@ -53,7 +51,7 @@ public class FilmControllerTests {
                 "Some Description.Some Description.Some Description.Some Description.Some Description." +
                 "Some Description.Some Description.Some Description.Some Description.Some Description.");
         validFilm.setReleaseDate(LocalDate.parse("1800-10-14"));
-        validFilm.setDuration(Duration.of(90, MINUTES));
+        validFilm.setDuration(100L);
 
         assertThrows(ValidationException.class,() -> {
             filmController.validate(validFilm);
@@ -68,7 +66,7 @@ public class FilmControllerTests {
         validFilm.setName("");
         validFilm.setDescription("Matrix.Part I");
         validFilm.setReleaseDate(LocalDate.parse("1999-10-14"));
-        validFilm.setDuration(Duration.of(90, MINUTES));
+        validFilm.setDuration(100L);
 
         assertThrows(ValidationException.class,() -> {
             filmController.validate(validFilm);
@@ -83,7 +81,7 @@ public class FilmControllerTests {
         validFilm.setName("Matrix");
         validFilm.setDescription("Matrix.Part I");
         validFilm.setReleaseDate(LocalDate.parse("1999-10-14"));
-        validFilm.setDuration(Duration.of(-90, MINUTES));
+        validFilm.setDuration(-100L);
 
         assertThrows(ValidationException.class,() -> {
             filmController.validate(validFilm);

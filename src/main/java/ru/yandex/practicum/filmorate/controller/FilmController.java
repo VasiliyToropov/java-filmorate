@@ -53,6 +53,7 @@ public class FilmController {
             oldFilm.setDescription(newFilm.getDescription());
             oldFilm.setReleaseDate(newFilm.getReleaseDate());
             oldFilm.setDuration(newFilm.getDuration());
+
             log.trace("Фильм обновлен");
             return oldFilm;
         }
@@ -89,7 +90,7 @@ public class FilmController {
         }
 
         // продолжительность фильма должна быть положительным числом
-        if (!film.getDuration().isPositive()) {
+        if (film.getDuration() <= 0 ) {
             throw new ValidationException("Ошибка валидации - продолжительность должна быть положительным числом");
         }
     }

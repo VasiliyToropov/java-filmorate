@@ -32,7 +32,7 @@ public class UserController {
         user.setId(getNextId());
 
         // если имя пустое, то используем логин
-        if (user.getName().isBlank()) {
+        if (user.getName() == null) {
             user.setName(user.getLogin());
         }
 
@@ -61,7 +61,7 @@ public class UserController {
             oldUser.setEmail(newUser.getEmail());
             oldUser.setLogin(newUser.getLogin());
 
-            if (newUser.getName().isBlank()) {
+            if (newUser.getName() == null) {
                 oldUser.setName(newUser.getLogin());
             } else {
                 oldUser.setName(newUser.getName());
