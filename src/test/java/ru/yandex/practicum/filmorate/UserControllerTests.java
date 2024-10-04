@@ -1,16 +1,16 @@
 package ru.yandex.practicum.filmorate;
 
 import org.junit.jupiter.api.Test;
-import ru.yandex.practicum.filmorate.controller.UserController;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
+import ru.yandex.practicum.filmorate.services.Validator;
 
 import java.time.LocalDate;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class UserControllerTests {
-    static UserController userController = new UserController();
+    static Validator validator = new Validator();
 
     //Проверяем прохождение валидации
     @Test
@@ -23,7 +23,7 @@ public class UserControllerTests {
         validUser.setName("userName");
         validUser.setBirthday(LocalDate.parse("1990-11-29"));
 
-        userController.validate(validUser);
+        validator.validate(validUser);
     }
 
 
@@ -39,7 +39,7 @@ public class UserControllerTests {
         validUser.setBirthday(LocalDate.parse("1990-11-29"));
 
         assertThrows(ValidationException.class, () -> {
-            userController.validate(validUser);
+            validator.validate(validUser);
         });
     }
 
@@ -55,7 +55,7 @@ public class UserControllerTests {
         validUser.setBirthday(LocalDate.parse("1990-11-29"));
 
         assertThrows(ValidationException.class, () -> {
-            userController.validate(validUser);
+            validator.validate(validUser);
         });
     }
 
@@ -71,7 +71,7 @@ public class UserControllerTests {
         validUser.setBirthday(LocalDate.parse("1990-11-29"));
 
         assertThrows(ValidationException.class, () -> {
-            userController.validate(validUser);
+            validator.validate(validUser);
         });
     }
 
@@ -87,7 +87,7 @@ public class UserControllerTests {
         validUser.setBirthday(LocalDate.parse("1990-11-29"));
 
         assertThrows(ValidationException.class, () -> {
-            userController.validate(validUser);
+            validator.validate(validUser);
         });
     }
 
@@ -103,7 +103,7 @@ public class UserControllerTests {
         validUser.setBirthday(LocalDate.parse("2990-11-29"));
 
         assertThrows(ValidationException.class, () -> {
-            userController.validate(validUser);
+            validator.validate(validUser);
         });
     }
 }

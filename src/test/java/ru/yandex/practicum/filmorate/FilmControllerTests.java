@@ -1,9 +1,9 @@
 package ru.yandex.practicum.filmorate;
 
 import org.junit.jupiter.api.Test;
-import ru.yandex.practicum.filmorate.controller.FilmController;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.services.Validator;
 
 import java.time.LocalDate;
 
@@ -11,7 +11,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class FilmControllerTests {
 
-    static FilmController filmController = new FilmController();
+    static Validator validator = new Validator();
 
     //Проверяем прохождение валидации
     @Test
@@ -23,7 +23,7 @@ public class FilmControllerTests {
         validFilm.setReleaseDate(LocalDate.parse("1999-10-14"));
         validFilm.setDuration(100L);
 
-        filmController.validate(validFilm);
+        validator.validate(validFilm);
     }
 
     //Проверяем неверную дату релиза
@@ -37,7 +37,7 @@ public class FilmControllerTests {
         validFilm.setDuration(100L);
 
         assertThrows(ValidationException.class, () -> {
-            filmController.validate(validFilm);
+            validator.validate(validFilm);
         });
     }
 
@@ -54,7 +54,7 @@ public class FilmControllerTests {
         validFilm.setDuration(100L);
 
         assertThrows(ValidationException.class, () -> {
-            filmController.validate(validFilm);
+            validator.validate(validFilm);
         });
     }
 
@@ -69,7 +69,7 @@ public class FilmControllerTests {
         validFilm.setDuration(100L);
 
         assertThrows(ValidationException.class, () -> {
-            filmController.validate(validFilm);
+            validator.validate(validFilm);
         });
     }
 
@@ -84,7 +84,7 @@ public class FilmControllerTests {
         validFilm.setDuration(-100L);
 
         assertThrows(ValidationException.class, () -> {
-            filmController.validate(validFilm);
+            validator.validate(validFilm);
         });
     }
 }

@@ -5,8 +5,8 @@ import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
+import ru.yandex.practicum.filmorate.services.Validator;
 
-import java.time.LocalDate;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
@@ -17,6 +17,8 @@ import java.util.Map;
 public class FilmController {
     private final Map<Long, Film> films = new HashMap<>();
 
+    private final Validator validator = new Validator();
+
     @GetMapping
     public Collection<Film> getAllFilms() {
         log.trace("Получили все фильмы");
@@ -26,7 +28,7 @@ public class FilmController {
     @PostMapping
     public Film addFilm(@RequestBody Film film) {
         // проверяем выполнение необходимых условий
-        validate(film);
+        validator.validate(film);
         // формируем дополнительные данные
         film.setId(getNextId());
 
@@ -46,7 +48,7 @@ public class FilmController {
 
         if (films.containsKey(newFilm.getId())) {
             Film oldFilm = films.get(newFilm.getId());
-            validate(newFilm);
+            validator.validate(newFilm);
 
             // если фильм найден и все условия соблюдены, обновляем его содержимое
             oldFilm.setName(newFilm.getName());
@@ -72,26 +74,4 @@ public class FilmController {
         return ++currentMaxId;
     }
 
-    // метод для проверки условий валидации
-    public void validate(Film film) {
-        if (film.getName() == null || film.getName().isBlank()) {
-            throw new ValidationException("Ошибка валидации - имя не может быть пустым");
-        }
-
-        //максимальная длина описания — 200 символов
-        if (film.getDescription().length() > 200 || film.getDescription().isBlank()) {
-            throw new ValidationException("Ошибка валидации - длина описания больше 200 символов или пустое");
-        }
-
-        // дата релиза — не раньше 28 декабря 1895 года;
-        LocalDate cinemaBirthDay = LocalDate.parse("1895-12-28");
-        if (film.getReleaseDate().isBefore(cinemaBirthDay)) {
-            throw new ValidationException("Ошибка валидации - дата релиза раньше 1895-12-28");
-        }
-
-        // продолжительность фильма должна быть положительным числом
-        if (film.getDuration() <= 0) {
-            throw new ValidationException("Ошибка валидации - продолжительность должна быть положительным числом");
-        }
-    }
 }
