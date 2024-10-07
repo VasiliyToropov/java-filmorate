@@ -1,11 +1,11 @@
 package ru.yandex.practicum.filmorate.controller;
 
+import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.services.Validator;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -16,7 +16,7 @@ import java.util.Map;
 @Slf4j
 public class UserController {
     private final Map<Long, User> users = new HashMap<>();
-    private final Validator validator = new Validator();
+    private long id = 0;
 
     @GetMapping
     public Collection<User> getAllUsers() {
@@ -25,17 +25,15 @@ public class UserController {
     }
 
     @PostMapping
-    public User createUser(@RequestBody User user) {
-        // проверяем выполнение необходимых условий
-        validator.validate(user);
-
+    public User createUser(@Valid @RequestBody User user) {
         // формируем дополнительные данные
-        user.setId(getNextId());
+        user.setId(id);
+
+        // инкрементируем id для следующего пользователя
+        id++;
 
         // если имя пустое, то используем логин
-        if (user.getName() == null) {
-            user.setName(user.getLogin());
-        }
+        ifNameIsNullOrEmpty(user);
 
         // сохраняем нового пользователя в памяти приложения
         users.put(user.getId(), user);
@@ -46,7 +44,7 @@ public class UserController {
     }
 
     @PutMapping
-    public User updateUser(@RequestBody User newUser) {
+    public User updateUser(@Valid @RequestBody User newUser) {
         // проверяем необходимые условия
         if (newUser.getId() == null) {
             log.warn("Произошла ошибка валидации");
@@ -56,17 +54,12 @@ public class UserController {
         if (users.containsKey(newUser.getId())) {
             User oldUser = users.get(newUser.getId());
 
-            validator.validate(newUser);
-
             // если пользователь найден и все условия соблюдены, обновляем его содержимое
             oldUser.setEmail(newUser.getEmail());
             oldUser.setLogin(newUser.getLogin());
 
-            if (newUser.getName() == null) {
-                oldUser.setName(newUser.getLogin());
-            } else {
-                oldUser.setName(newUser.getName());
-            }
+            // если имя пустое, то используем логин
+            ifNameIsNullOrEmpty(newUser, oldUser);
 
             oldUser.setBirthday(newUser.getBirthday());
 
@@ -78,12 +71,17 @@ public class UserController {
         throw new NotFoundException("Пользователь с id = " + newUser.getId() + " не найден");
     }
 
-    private long getNextId() {
-        long currentMaxId = users.keySet()
-                .stream()
-                .mapToLong(id -> id)
-                .max()
-                .orElse(0);
-        return ++currentMaxId;
+    public void ifNameIsNullOrEmpty(User user) {
+        if (user.getName() == null || user.getName().isBlank()) {
+            user.setName(user.getLogin());
+        }
+    }
+
+    public void ifNameIsNullOrEmpty(User newUser, User oldUser) {
+        if (newUser.getName() == null || newUser.getName().isBlank()) {
+            oldUser.setName(newUser.getLogin());
+        } else {
+            oldUser.setName(newUser.getName());
+        }
     }
 }

@@ -1,16 +1,28 @@
 package ru.yandex.practicum.filmorate;
 
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.Validator;
+import jakarta.validation.ValidatorFactory;
+import org.junit.Before;
 import org.junit.jupiter.api.Test;
-import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.services.Validator;
 
 import java.time.LocalDate;
+import java.util.Set;
 
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static jakarta.validation.Validation.buildDefaultValidatorFactory;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class UserControllerTests {
-    static Validator validator = new Validator();
+
+    private Validator validator;
+
+    @Before
+    public void setUp() {
+        ValidatorFactory factory = buildDefaultValidatorFactory();
+        validator = factory.getValidator();
+    }
 
     //Проверяем прохождение валидации
     @Test
@@ -23,7 +35,8 @@ public class UserControllerTests {
         validUser.setName("userName");
         validUser.setBirthday(LocalDate.parse("1990-11-29"));
 
-        validator.validate(validUser);
+        Set<ConstraintViolation<User>> violations = validator.validate(validUser);
+        assertTrue(violations.isEmpty());
     }
 
 
@@ -38,9 +51,8 @@ public class UserControllerTests {
         validUser.setName("userName");
         validUser.setBirthday(LocalDate.parse("1990-11-29"));
 
-        assertThrows(ValidationException.class, () -> {
-            validator.validate(validUser);
-        });
+        Set<ConstraintViolation<User>> violations = validator.validate(validUser);
+        assertFalse(violations.isEmpty());
     }
 
     //Электронная почта не должна быть пустой
@@ -54,9 +66,8 @@ public class UserControllerTests {
         validUser.setName("userName");
         validUser.setBirthday(LocalDate.parse("1990-11-29"));
 
-        assertThrows(ValidationException.class, () -> {
-            validator.validate(validUser);
-        });
+        Set<ConstraintViolation<User>> violations = validator.validate(validUser);
+        assertFalse(violations.isEmpty());
     }
 
     //Логин не может быть пустым
@@ -70,9 +81,8 @@ public class UserControllerTests {
         validUser.setName("userName");
         validUser.setBirthday(LocalDate.parse("1990-11-29"));
 
-        assertThrows(ValidationException.class, () -> {
-            validator.validate(validUser);
-        });
+        Set<ConstraintViolation<User>> violations = validator.validate(validUser);
+        assertFalse(violations.isEmpty());
     }
 
     //Логин не должен содержать пробелы
@@ -86,9 +96,8 @@ public class UserControllerTests {
         validUser.setName("userName");
         validUser.setBirthday(LocalDate.parse("1990-11-29"));
 
-        assertThrows(ValidationException.class, () -> {
-            validator.validate(validUser);
-        });
+        Set<ConstraintViolation<User>> violations = validator.validate(validUser);
+        assertFalse(violations.isEmpty());
     }
 
     //Дата рождения не должна быть в будущем
@@ -102,9 +111,8 @@ public class UserControllerTests {
         validUser.setName("userName");
         validUser.setBirthday(LocalDate.parse("2990-11-29"));
 
-        assertThrows(ValidationException.class, () -> {
-            validator.validate(validUser);
-        });
+        Set<ConstraintViolation<User>> violations = validator.validate(validUser);
+        assertFalse(violations.isEmpty());
     }
 }
 

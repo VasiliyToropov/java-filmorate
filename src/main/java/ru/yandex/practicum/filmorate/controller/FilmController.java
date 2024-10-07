@@ -1,11 +1,12 @@
 package ru.yandex.practicum.filmorate.controller;
 
+import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
 import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
-import ru.yandex.practicum.filmorate.services.Validator;
+import ru.yandex.practicum.filmorate.services.FilmValidator;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -17,7 +18,9 @@ import java.util.Map;
 public class FilmController {
     private final Map<Long, Film> films = new HashMap<>();
 
-    private final Validator validator = new Validator();
+    private final FilmValidator validator = new FilmValidator();
+
+    private long id = 0;
 
     @GetMapping
     public Collection<Film> getAllFilms() {
@@ -26,11 +29,15 @@ public class FilmController {
     }
 
     @PostMapping
-    public Film addFilm(@RequestBody Film film) {
+    public Film addFilm(@Valid @RequestBody Film film) {
         // проверяем выполнение необходимых условий
         validator.validate(film);
+
         // формируем дополнительные данные
-        film.setId(getNextId());
+        film.setId(id);
+
+        // инкрементируем id для следующего фильма
+        id++;
 
         // сохраняем новый фильм в памяти приложения
         films.put(film.getId(), film);
@@ -39,7 +46,7 @@ public class FilmController {
     }
 
     @PutMapping
-    public Film updateFilm(@RequestBody Film newFilm) {
+    public Film updateFilm(@Valid @RequestBody Film newFilm) {
         // проверяем необходимые условия
         if (newFilm.getId() == null) {
             log.warn("Произошла ошибка валидации");
@@ -62,16 +69,4 @@ public class FilmController {
         log.warn("Фильм не найден");
         throw new NotFoundException("Фильм с id = " + newFilm.getId() + " не найден");
     }
-
-
-    // вспомогательный метод для генерации идентификатора нового фильма
-    private long getNextId() {
-        long currentMaxId = films.keySet()
-                .stream()
-                .mapToLong(id -> id)
-                .max()
-                .orElse(0);
-        return ++currentMaxId;
-    }
-
 }
