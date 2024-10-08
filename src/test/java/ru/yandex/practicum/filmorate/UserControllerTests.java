@@ -3,7 +3,6 @@ package ru.yandex.practicum.filmorate;
 import jakarta.validation.ConstraintViolation;
 import jakarta.validation.Validator;
 import jakarta.validation.ValidatorFactory;
-import org.junit.Before;
 import org.junit.jupiter.api.Test;
 import ru.yandex.practicum.filmorate.model.User;
 
@@ -18,15 +17,13 @@ public class UserControllerTests {
 
     private Validator validator;
 
-    @Before
-    public void setUp() {
-        ValidatorFactory factory = buildDefaultValidatorFactory();
-        validator = factory.getValidator();
-    }
-
     //Проверяем прохождение валидации
     @Test
     void checkValidationOK() {
+
+        ValidatorFactory factory = buildDefaultValidatorFactory();
+        validator = factory.getValidator();
+
         User validUser = new User();
 
         validUser.setId(0L);
@@ -45,6 +42,9 @@ public class UserControllerTests {
     void checkValidationEmail() {
         User validUser = new User();
 
+        ValidatorFactory factory = buildDefaultValidatorFactory();
+        validator = factory.getValidator();
+
         validUser.setId(0L);
         validUser.setEmail("userya.ru");
         validUser.setLogin("userLogin");
@@ -58,6 +58,10 @@ public class UserControllerTests {
     //Электронная почта не должна быть пустой
     @Test
     void checkValidationEmailIsBlanc() {
+
+        ValidatorFactory factory = buildDefaultValidatorFactory();
+        validator = factory.getValidator();
+
         User validUser = new User();
 
         validUser.setId(0L);
@@ -73,6 +77,10 @@ public class UserControllerTests {
     //Логин не может быть пустым
     @Test
     void checkValidationLoginIsBlanc() {
+
+        ValidatorFactory factory = buildDefaultValidatorFactory();
+        validator = factory.getValidator();
+
         User validUser = new User();
 
         validUser.setId(0L);
@@ -88,6 +96,10 @@ public class UserControllerTests {
     //Логин не должен содержать пробелы
     @Test
     void checkValidationLoginHaveSpace() {
+
+        ValidatorFactory factory = buildDefaultValidatorFactory();
+        validator = factory.getValidator();
+
         User validUser = new User();
 
         validUser.setId(0L);
@@ -103,6 +115,10 @@ public class UserControllerTests {
     //Дата рождения не должна быть в будущем
     @Test
     void checkValidationBirthdayInTheFuture() {
+
+        ValidatorFactory factory = buildDefaultValidatorFactory();
+        validator = factory.getValidator();
+
         User validUser = new User();
 
         validUser.setId(0L);
