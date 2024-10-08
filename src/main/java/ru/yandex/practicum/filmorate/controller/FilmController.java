@@ -20,7 +20,7 @@ public class FilmController {
 
     private final FilmValidator validator = new FilmValidator();
 
-    private long id = 0;
+    private long id = 1;
 
     @GetMapping
     public Collection<Film> getAllFilms() {
@@ -36,12 +36,13 @@ public class FilmController {
         // формируем дополнительные данные
         film.setId(id);
 
-        // инкрементируем id для следующего фильма
-        id++;
-
         // сохраняем новый фильм в памяти приложения
         films.put(film.getId(), film);
         log.trace("Фильм добавлен");
+
+        // инкрементируем id для следующего фильма
+        id++;
+
         return film;
     }
 
