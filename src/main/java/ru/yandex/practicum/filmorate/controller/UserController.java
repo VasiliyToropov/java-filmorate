@@ -30,7 +30,7 @@ public class UserController {
 
     @GetMapping
     public Collection<User> getAllUsers() {
-       return userStorage.getAllUsers();
+        return userStorage.getAllUsers();
     }
 
     @GetMapping("/users/{id}")
@@ -63,7 +63,7 @@ public class UserController {
     //Добавление в друзья
     @PutMapping("/users/{id}/friends/{friendId}")
     public User addFriend(@PathVariable Long id, @PathVariable Long friendId) {
-        return userService.addFriend(id,friendId);
+        return userService.addFriend(id, friendId);
     }
 
     @DeleteMapping
@@ -92,6 +92,6 @@ public class UserController {
     @ExceptionHandler
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public Map<String, String> handleOtherExceptions(final Exception e) {
-        return Map.of("error","Возникло исключение");
+        return Map.of("error", "Возникло исключение");
     }
 }

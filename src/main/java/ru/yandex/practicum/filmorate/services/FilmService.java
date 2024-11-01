@@ -22,13 +22,13 @@ public class FilmService {
     }
 
     public void addLike(Long id, Long userId) {
-        if(id == null || userId == null) {
+        if (id == null || userId == null) {
             throw new NotFoundException("Пользователи с такими id не найдены");
         }
 
         Film film = filmStorage.getFilm(id);
 
-        if(film.getWhoLiked().contains(userId)) {
+        if (film.getWhoLiked().contains(userId)) {
             log.warn("Пользователь уже лайкнул этот фильм");
         } else {
             film.getWhoLiked().add(userId);
@@ -37,13 +37,13 @@ public class FilmService {
     }
 
     public void deleteLike(Long id, Long userId) {
-        if(id == null || userId == null) {
+        if (id == null || userId == null) {
             throw new NotFoundException("Пользователи с такими id не найдены");
         }
 
         Film film = filmStorage.getFilm(id);
 
-        if(film.getWhoLiked().contains(userId)) {
+        if (film.getWhoLiked().contains(userId)) {
             film.getWhoLiked().remove(userId);
             log.info("Лайк удален");
         } else {
@@ -58,7 +58,7 @@ public class FilmService {
 
         filmsSortedByNumberOfLikes.sort(new CountComparator());
 
-        if(count == null || count <= 0) {
+        if (count == null || count <= 0) {
             count = 10L;
         }
 

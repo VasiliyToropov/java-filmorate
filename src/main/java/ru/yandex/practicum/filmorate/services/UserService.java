@@ -23,7 +23,7 @@ public class UserService {
     }
 
     public User addFriend(Long id, Long friendId) {
-        if(id == null || friendId == null) {
+        if (id == null || friendId == null) {
             throw new NotFoundException("Пользователи с такими id не найдены");
         }
 
@@ -36,7 +36,7 @@ public class UserService {
     }
 
     public void deleteFriend(Long id, Long friendId) {
-        if(id == null || friendId == null) {
+        if (id == null || friendId == null) {
             throw new NotFoundException("Пользователи с такими id не найдены");
         }
 
@@ -48,7 +48,7 @@ public class UserService {
     }
 
     public Set<Long> getFriends(Long id) {
-        if(id == null) {
+        if (id == null) {
             throw new NotFoundException("Пользователь с такими id не найдены");
         }
 
@@ -60,7 +60,7 @@ public class UserService {
     }
 
     public Set<Long> getFriendsSharedWithAnotherUser(Long id, Long otherId) {
-        if(id == null || otherId == null) {
+        if (id == null || otherId == null) {
             throw new NotFoundException("Пользователи с такими id не найдены");
         }
 

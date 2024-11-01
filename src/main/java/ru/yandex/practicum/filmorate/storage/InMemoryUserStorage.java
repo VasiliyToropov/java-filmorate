@@ -40,14 +40,14 @@ public class InMemoryUserStorage implements UserStorage {
 
     @Override
     public User getUser(Long id) {
-        if(users.containsKey(id)) {
-           return users.get(id);
+        if (users.containsKey(id)) {
+            return users.get(id);
         } else throw new NotFoundException("Пользователь с таким ID не найден");
     }
 
     @Override
     public void deleteUser(@Valid User user) {
-        if(users.containsKey(user.getId())) {
+        if (users.containsKey(user.getId())) {
             users.remove(user.getId());
             log.trace("Пользователь удален");
         } else throw new NotFoundException("Пользователь с таким ID не найден");

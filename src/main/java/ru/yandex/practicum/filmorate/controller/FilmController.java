@@ -57,10 +57,12 @@ public class FilmController {
     public void addLike(@PathVariable Long id, @PathVariable Long userId) {
         filmService.addLike(id, userId);
     }
+
     @DeleteMapping
     public void deleteFilm(@RequestBody Film film) {
         filmStorage.deleteFilm(film);
     }
+
     @DeleteMapping("films/{id}/like/{userId}")
     public void deleteLike(@PathVariable Long id, @PathVariable Long userId) {
         filmService.deleteLike(id, userId);
@@ -81,6 +83,6 @@ public class FilmController {
     @ExceptionHandler
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     public Map<String, String> handleOtherExceptions(final Exception e) {
-        return Map.of("error","Возникло исключение");
+        return Map.of("error", "Возникло исключение");
     }
 }
