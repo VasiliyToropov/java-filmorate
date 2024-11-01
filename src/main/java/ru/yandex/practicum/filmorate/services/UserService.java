@@ -67,16 +67,16 @@ public class UserService {
         User user = userStorage.getUser(id);
         User otherUser = userStorage.getUser(otherId);
 
-        Set<Long> FriendsSharedWithAnotherUser = new HashSet<>();
+        Set<Long> friendsSharedWithAnotherUser = new HashSet<>();
 
         Stream<Long> userFriendList = user.getFriendsIds().stream();
         Stream<Long> otherUserFriendList = otherUser.getFriendsIds().stream();
 
         userFriendList.filter(element -> otherUserFriendList.anyMatch(e -> Objects.equals(e, element)))
-                .forEach(FriendsSharedWithAnotherUser::add);
+                .forEach(friendsSharedWithAnotherUser::add);
 
         log.trace("Получен список друзей , общих с другим пользователем");
 
-        return FriendsSharedWithAnotherUser;
+        return friendsSharedWithAnotherUser;
     }
 }
