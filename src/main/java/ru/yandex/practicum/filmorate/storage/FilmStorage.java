@@ -2,7 +2,7 @@ package ru.yandex.practicum.filmorate.storage;
 
 import ru.yandex.practicum.filmorate.model.Film;
 
-import java.util.List;
+import java.util.ArrayList;
 
 public interface FilmStorage {
     public Film getFilm(Long id);
@@ -13,5 +13,5 @@ public interface FilmStorage {
 
     public Film updateFilm(Film newFilm);
 
-    public List<Film> getAllFilms();
+    public ArrayList<Film> getAllFilms();
 }

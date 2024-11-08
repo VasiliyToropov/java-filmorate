@@ -1,6 +1,5 @@
 package ru.yandex.practicum.filmorate.storage;
 
-import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
@@ -8,8 +7,8 @@ import ru.yandex.practicum.filmorate.exception.ValidationException;
 import ru.yandex.practicum.filmorate.model.Film;
 import ru.yandex.practicum.filmorate.services.FilmValidator;
 
+import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 @Component
@@ -22,7 +21,7 @@ public class InMemoryFilmStorage implements FilmStorage {
 
 
     @Override
-    public Film addFilm(@Valid Film film) {
+    public Film addFilm(Film film) {
         // проверяем выполнение необходимых условий
         validator.validate(film);
 
@@ -32,7 +31,7 @@ public class InMemoryFilmStorage implements FilmStorage {
         // сохраняем новый фильм в памяти приложения
         films.put(film.getId(), film);
 
-        log.trace("Фильм добавлен");
+        log.info("Фильм добавлен");
 
         // инкрементируем id для следующего фильма
         id++;
@@ -43,20 +42,21 @@ public class InMemoryFilmStorage implements FilmStorage {
     @Override
     public Film getFilm(Long id) {
         if (films.containsKey(id)) {
+            log.info("Фильм получен");
             return films.get(id);
         } else throw new NotFoundException("Фильм с таким ID не найден");
     }
 
     @Override
-    public void deleteFilm(@Valid Film film) {
+    public void deleteFilm(Film film) {
         if (films.containsKey(film.getId())) {
             films.remove(film.getId());
-            log.trace("Фильм удален");
+            log.info("Фильм удален");
         } else throw new NotFoundException("Фильм с таким ID не найден");
     }
 
     @Override
-    public Film updateFilm(@Valid Film newFilm) {
+    public Film updateFilm(Film newFilm) {
         // проверяем необходимые условия
         if (newFilm.getId() == null) {
             log.warn("Произошла ошибка валидации");
@@ -73,7 +73,7 @@ public class InMemoryFilmStorage implements FilmStorage {
             oldFilm.setReleaseDate(newFilm.getReleaseDate());
             oldFilm.setDuration(newFilm.getDuration());
 
-            log.trace("Фильм обновлен");
+            log.info("Фильм обновлен");
             return oldFilm;
         }
         log.warn("Фильм не найден");
@@ -81,9 +81,17 @@ public class InMemoryFilmStorage implements FilmStorage {
     }
 
     @Override
-    public List<Film> getAllFilms() {
-        log.trace("Получили все фильмы");
-        return films.values().stream().toList();
+    public ArrayList<Film> getAllFilms() {
+
+        ArrayList<Film> allFilms = new ArrayList<>();
+
+        films.forEach((key, value) -> {
+            allFilms.add(value);
+        });
+
+        log.info("Получили все фильмы");
+
+        return allFilms;
     }
 
 

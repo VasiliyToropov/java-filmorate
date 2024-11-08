@@ -1,6 +1,5 @@
 package ru.yandex.practicum.filmorate.storage;
 
-import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.filmorate.exception.NotFoundException;
@@ -20,7 +19,7 @@ public class InMemoryUserStorage implements UserStorage {
 
 
     @Override
-    public User createUser(@Valid User user) {
+    public User createUser(User user) {
         // формируем дополнительные данные
         user.setId(id);
 
@@ -33,7 +32,7 @@ public class InMemoryUserStorage implements UserStorage {
         // сохраняем нового пользователя в памяти приложения
         users.put(user.getId(), user);
 
-        log.trace("Пользователь добавлен");
+        log.info("Пользователь добавлен");
 
         return user;
     }
@@ -46,15 +45,15 @@ public class InMemoryUserStorage implements UserStorage {
     }
 
     @Override
-    public void deleteUser(@Valid User user) {
+    public void deleteUser(User user) {
         if (users.containsKey(user.getId())) {
             users.remove(user.getId());
-            log.trace("Пользователь удален");
+            log.info("Пользователь удален");
         } else throw new NotFoundException("Пользователь с таким ID не найден");
     }
 
     @Override
-    public User updateUser(@Valid User newUser) {
+    public User updateUser(User newUser) {
         // проверяем необходимые условия
         if (newUser.getId() == null) {
             log.warn("Произошла ошибка валидации");
@@ -73,7 +72,7 @@ public class InMemoryUserStorage implements UserStorage {
 
             oldUser.setBirthday(newUser.getBirthday());
 
-            log.trace("Пользователь обновлен");
+            log.info("Пользователь обновлен");
 
             return oldUser;
         }
@@ -83,7 +82,7 @@ public class InMemoryUserStorage implements UserStorage {
 
     @Override
     public List<User> getAllUsers() {
-        log.trace("Получили всех пользователей");
+        log.info("Получили всех пользователей");
         return users.values().stream().toList();
     }
 

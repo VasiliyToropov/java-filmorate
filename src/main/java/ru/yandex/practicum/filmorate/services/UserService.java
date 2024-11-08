@@ -7,10 +7,10 @@ import ru.yandex.practicum.filmorate.model.User;
 import ru.yandex.practicum.filmorate.storage.InMemoryUserStorage;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
 
+import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.Objects;
+import java.util.List;
 import java.util.Set;
-import java.util.stream.Stream;
 
 @Service
 @Slf4j
@@ -23,14 +23,18 @@ public class UserService {
     }
 
     public User addFriend(Long id, Long friendId) {
+
         if (id == null || friendId == null) {
             throw new NotFoundException("Пользователи с такими id не найдены");
         }
 
         User user = userStorage.getUser(id);
-        user.getFriendsIds().add(friendId);
+        User friendToUser = userStorage.getUser(friendId);
 
-        log.info("Друг добавлен");
+        user.getFriendsIds().add(friendId);
+        friendToUser.getFriendsIds().add(id);
+
+        log.info("Пользователь " + id + " добавил в друзья пользователя " + friendId);
 
         return user;
     }
@@ -41,25 +45,33 @@ public class UserService {
         }
 
         User user = userStorage.getUser(id);
+        User friendToUser = userStorage.getUser(friendId);
 
         user.getFriendsIds().remove(friendId);
+        friendToUser.getFriendsIds().remove(id);
 
         log.info("Друг удален");
     }
 
-    public Set<Long> getFriends(Long id) {
+    public List<User> getFriends(Long id) {
         if (id == null) {
             throw new NotFoundException("Пользователь с такими id не найдены");
         }
 
         User user = userStorage.getUser(id);
 
-        log.trace("Получен список друзей");
+        List<User> friendsToUser = new ArrayList<>();
 
-        return user.getFriendsIds();
+        for (Long i : user.getFriendsIds()) {
+            friendsToUser.add(userStorage.getUser(i));
+        }
+
+        log.info("Вернули список друзей");
+
+        return friendsToUser;
     }
 
-    public Set<Long> getFriendsSharedWithAnotherUser(Long id, Long otherId) {
+    public List<User> getCommonFriends(Long id, Long otherId) {
         if (id == null || otherId == null) {
             throw new NotFoundException("Пользователи с такими id не найдены");
         }
@@ -67,16 +79,22 @@ public class UserService {
         User user = userStorage.getUser(id);
         User otherUser = userStorage.getUser(otherId);
 
-        Set<Long> friendsSharedWithAnotherUser = new HashSet<>();
+        Set<Long> commonFriendsIds = new HashSet<>();
 
-        Stream<Long> userFriendList = user.getFriendsIds().stream();
-        Stream<Long> otherUserFriendList = otherUser.getFriendsIds().stream();
+        for (Long i : user.getFriendsIds()) {
+            if (otherUser.getFriendsIds().contains(i)) {
+                commonFriendsIds.add(i);
+            }
+        }
 
-        userFriendList.filter(element -> otherUserFriendList.anyMatch(e -> Objects.equals(e, element)))
-                .forEach(friendsSharedWithAnotherUser::add);
+        List<User> commonFriends = new ArrayList<>();
 
-        log.trace("Получен список друзей , общих с другим пользователем");
+        for (Long i : commonFriendsIds) {
+            commonFriends.add(userStorage.getUser(i));
+        }
 
-        return friendsSharedWithAnotherUser;
+        log.info("Получен список друзей, общих с другим пользователем");
+
+        return commonFriends;
     }
 }

@@ -1,5 +1,6 @@
 package ru.yandex.practicum.filmorate.controller;
 
+import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -11,8 +12,8 @@ import ru.yandex.practicum.filmorate.storage.InMemoryUserStorage;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
 
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 @RestController
 @RequestMapping("/users")
@@ -33,46 +34,46 @@ public class UserController {
         return userStorage.getAllUsers();
     }
 
-    @GetMapping("/users/{id}")
+    @GetMapping("/{id}")
     public User getUser(@PathVariable Long id) {
         return userStorage.getUser(id);
     }
 
     // Возврат списка пользователей
-    @GetMapping("/users/{id}/friends")
-    public Set<Long> getFriends(@PathVariable Long id) {
+    @GetMapping("/{id}/friends")
+    public List<User> getFriends(@PathVariable Long id) {
         return userService.getFriends(id);
     }
 
     //Возвращаем список друзей, общих с другим пользователем
-    @GetMapping("/users/{id}/friends/common/{otherId}")
-    public Set<Long> getFriendsSharedWithAnotherUser(@PathVariable Long id, @PathVariable Long otherId) {
-        return userService.getFriendsSharedWithAnotherUser(id, otherId);
+    @GetMapping("/{id}/friends/common/{otherId}")
+    public List<User> getFriendsSharedWithAnotherUser(@PathVariable Long id, @PathVariable Long otherId) {
+        return userService.getCommonFriends(id, otherId);
     }
 
     @PostMapping
-    public User createUser(@RequestBody User user) {
+    public User createUser(@Valid @RequestBody User user) {
         return userStorage.createUser(user);
     }
 
     @PutMapping
-    public User updateUser(@RequestBody User newUser) {
+    public User updateUser(@Valid @RequestBody User newUser) {
         return userStorage.updateUser(newUser);
     }
 
     //Добавление в друзья
-    @PutMapping("/users/{id}/friends/{friendId}")
+    @PutMapping("/{id}/friends/{friendId}")
     public User addFriend(@PathVariable Long id, @PathVariable Long friendId) {
         return userService.addFriend(id, friendId);
     }
 
     @DeleteMapping
-    public void deleteUser(@RequestBody User user) {
+    public void deleteUser(@Valid @RequestBody User user) {
         userStorage.deleteUser(user);
     }
 
     //Удаление друга
-    @DeleteMapping("/users/{id}/friends/{friendId}")
+    @DeleteMapping("/{id}/friends/{friendId}")
     public void deleteFriend(@PathVariable Long id, @PathVariable Long friendId) {
         userService.deleteFriend(id, friendId);
     }
@@ -91,7 +92,7 @@ public class UserController {
 
     @ExceptionHandler
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
-    public Map<String, String> handleOtherExceptions(final Exception e) {
+    public Map<String, String> handleOtherExceptions(final RuntimeException e) {
         return Map.of("error", "Возникло исключение");
     }
 }
