@@ -10,7 +10,7 @@ import ru.yandex.practicum.filmorate.exception.ValidationException;
 import java.util.Map;
 
 @RestControllerAdvice
-public class defaultAdvice {
+public class DefaultAdvice {
     @ExceptionHandler(NotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public Map<String, String> handleFilmNotFound(final NotFoundException e) {
