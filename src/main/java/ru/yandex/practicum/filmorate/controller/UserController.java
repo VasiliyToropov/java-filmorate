@@ -2,25 +2,26 @@ package ru.yandex.practicum.filmorate.controller;
 
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.filmorate.model.User;
-import ru.yandex.practicum.filmorate.services.UserService;
-import ru.yandex.practicum.filmorate.storage.InMemoryUserStorage;
+import ru.yandex.practicum.filmorate.services.DalUserService;
 import ru.yandex.practicum.filmorate.storage.UserStorage;
 
 import java.util.Collection;
 import java.util.List;
 
 @RestController
+@Qualifier("DalUserStorage")
 @RequestMapping("/users")
 @Slf4j
 
 public class UserController {
 
     private final UserStorage userStorage;
-    private final UserService userService;
+    private final DalUserService userService;
 
-    public UserController(InMemoryUserStorage userStorage, UserService userService) {
+    public UserController(@Qualifier("DalUserStorage") UserStorage userStorage, DalUserService userService) {
         this.userStorage = userStorage;
         this.userService = userService;
     }
@@ -35,7 +36,6 @@ public class UserController {
         return userStorage.getUser(id);
     }
 
-    // Возврат списка пользователей
     @GetMapping("/{id}/friends")
     public List<User> getFriends(@PathVariable Long id) {
         return userService.getFriends(id);
