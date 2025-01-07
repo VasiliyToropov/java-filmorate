@@ -88,7 +88,7 @@ public class FilmRepository {
         Optional<Film> film = getFilm(newFilm.getId());
 
         if (film.isEmpty()) {
-            throw new NotFoundException("Пользователь с таким ID не найден");
+            throw new NotFoundException("Фильм с таким ID не найден");
         }
 
 

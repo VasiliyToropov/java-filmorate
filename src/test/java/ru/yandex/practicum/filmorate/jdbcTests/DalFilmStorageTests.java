@@ -1,7 +1,6 @@
 package ru.yandex.practicum.filmorate.jdbcTests;
 
 import lombok.RequiredArgsConstructor;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
@@ -37,8 +36,8 @@ public class DalFilmStorageTests {
 
     private final DalFilmStorage dalFilmStorage;
 
-    @BeforeEach
-    public void beforeEach() {
+    @Test
+    public void testGetFilmById() {
         Film film = new Film();
         LocalDate date = LocalDate.parse("1990-12-02");
         Rating rating = new Rating();
@@ -51,13 +50,9 @@ public class DalFilmStorageTests {
         film.setMpa(rating);
 
         dalFilmStorage.addFilm(film);
-    }
 
-    @Test
-    public void testGetFilmById() {
-        Film testFilm = dalFilmStorage.getFilm(1L);
+        Film testFilm = dalFilmStorage.getFilm(film.getId());
 
-        assertThat(testFilm).hasFieldOrPropertyWithValue("id",1L);
         assertThat(testFilm).hasFieldOrPropertyWithValue("name","Some Film");
     }
 
@@ -75,6 +70,20 @@ public class DalFilmStorageTests {
         film.setMpa(rating);
 
         dalFilmStorage.addFilm(film);
+
+
+        Film film2 = new Film();
+        LocalDate date2 = LocalDate.parse("1990-12-02");
+        Rating rating2 = new Rating();
+        rating2.setId(3);
+
+        film2.setName("Some Film");
+        film2.setDescription("Some Desc");
+        film2.setDuration(100L);
+        film2.setReleaseDate(date2);
+        film2.setMpa(rating2);
+
+        dalFilmStorage.addFilm(film2);
 
         List<Film> films = dalFilmStorage.getAllFilms();
 
@@ -98,9 +107,8 @@ public class DalFilmStorageTests {
 
         dalFilmStorage.addFilm(film);
 
-        Film testFilm = dalFilmStorage.getFilm(2L);
+        Film testFilm = dalFilmStorage.getFilm(film.getId());
 
-        assertThat(testFilm).hasFieldOrPropertyWithValue("id",2L);
         assertThat(testFilm).hasFieldOrPropertyWithValue("name","New Film");
     }
 
@@ -119,9 +127,7 @@ public class DalFilmStorageTests {
 
         dalFilmStorage.addFilm(film);
 
-        Film testFilm = dalFilmStorage.getFilm(2L);
-
-        assertThat(testFilm).hasFieldOrPropertyWithValue("id",2L);
+        Film testFilm = dalFilmStorage.getFilm(film.getId());
 
         dalFilmStorage.deleteFilm(testFilm);
 
@@ -142,11 +148,24 @@ public class DalFilmStorageTests {
         film.setDuration(100L);
         film.setReleaseDate(date);
         film.setMpa(rating);
-        film.setId(1L);
 
-        dalFilmStorage.updateFilm(film);
+        dalFilmStorage.addFilm(film);
 
-        Film testFilm = dalFilmStorage.getFilm(1L);
+        Film updateFilm = new Film();
+        LocalDate updateDate = LocalDate.parse("1990-10-02");
+        Rating updateRating = new Rating();
+        updateRating.setId(3);
+
+        updateFilm.setName("New Film");
+        updateFilm.setDescription("New Desc");
+        updateFilm.setDuration(100L);
+        updateFilm.setReleaseDate(updateDate);
+        updateFilm.setMpa(updateRating);
+        updateFilm.setId(film.getId());
+
+        dalFilmStorage.updateFilm(updateFilm);
+
+        Film testFilm = dalFilmStorage.getFilm(updateFilm.getId());
 
         assertThat(testFilm).hasFieldOrPropertyWithValue("name","New Film");
         assertThat(testFilm).hasFieldOrPropertyWithValue("description","New Desc");

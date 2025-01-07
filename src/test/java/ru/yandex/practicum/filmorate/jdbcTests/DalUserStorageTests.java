@@ -1,7 +1,6 @@
 package ru.yandex.practicum.filmorate.jdbcTests;
 
 import lombok.RequiredArgsConstructor;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
@@ -25,9 +24,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 class DalUserStorageTests {
     private final DalUserStorage dalUserStorage;
 
-    //Создаем пользователя для теста
-    @BeforeEach
-    public void beforeEach() {
+    @Test
+    public void testGetUserById() {
         User user = new User();
         LocalDate date = LocalDate.parse("1990-11-02");
 
@@ -37,14 +35,9 @@ class DalUserStorageTests {
         user.setBirthday(date);
 
         dalUserStorage.createUser(user);
-    }
 
-    @Test
-    public void testGetUserById() {
+        User userOptional = dalUserStorage.getUser(user.getId());
 
-        User userOptional = dalUserStorage.getUser(1L);
-
-        assertThat(userOptional).hasFieldOrPropertyWithValue("id",1L);
         assertThat(userOptional).hasFieldOrPropertyWithValue("name","Some Name");
     }
 
@@ -52,14 +45,24 @@ class DalUserStorageTests {
     public void testGetAllUsers() {
 
         User user = new User();
-        LocalDate date = LocalDate.parse("1990-12-02");
+        LocalDate date = LocalDate.parse("1990-11-02");
 
-        user.setName("New Name");
-        user.setLogin("New Login");
-        user.setEmail("New EMail");
+        user.setName("Some Name");
+        user.setLogin("Some Login");
+        user.setEmail("Some Email");
         user.setBirthday(date);
 
         dalUserStorage.createUser(user);
+
+        User user2 = new User();
+        LocalDate date2 = LocalDate.parse("1990-12-02");
+
+        user2.setName("New Name");
+        user2.setLogin("New Login");
+        user2.setEmail("New EMail");
+        user2.setBirthday(date2);
+
+        dalUserStorage.createUser(user2);
 
         List<User> users = dalUserStorage.getAllUsers();
 
@@ -81,9 +84,8 @@ class DalUserStorageTests {
 
         dalUserStorage.createUser(user);
 
-        User testUser = dalUserStorage.getUser(2L);
+        User testUser = dalUserStorage.getUser(user.getId());
 
-        assertThat(testUser).hasFieldOrPropertyWithValue("id",2L);
         assertThat(testUser).hasFieldOrPropertyWithValue("name","New Name");
     }
 
@@ -98,31 +100,39 @@ class DalUserStorageTests {
         user.setBirthday(date);
 
         dalUserStorage.createUser(user);
-        User testUser = dalUserStorage.getUser(2L);
 
-        assertThat(testUser).hasFieldOrPropertyWithValue("id",2L);
-
-        dalUserStorage.deleteUser(testUser);
+        dalUserStorage.deleteUser(user);
 
         List<User> users = dalUserStorage.getAllUsers();
 
-        assertThat(users).doesNotContain(testUser);
+        assertThat(users).doesNotContain(user);
     }
 
     @Test
     public void testUpdateUser() {
+
+        User user = new User();
+        LocalDate date = LocalDate.parse("1990-11-02");
+
+        user.setName("Some Name");
+        user.setLogin("Some Login");
+        user.setEmail("Some Email");
+        user.setBirthday(date);
+
+        dalUserStorage.createUser(user);
+
         User updateUser = new User();
-        LocalDate date = LocalDate.parse("1990-12-02");
+        LocalDate updateDate = LocalDate.parse("1990-12-02");
 
         updateUser.setName("New Name");
         updateUser.setLogin("New Login");
         updateUser.setEmail("New EMail");
-        updateUser.setBirthday(date);
-        updateUser.setId(1L);
+        updateUser.setBirthday(updateDate);
+        updateUser.setId(user.getId());
 
         dalUserStorage.updateUser(updateUser);
 
-        User testUser = dalUserStorage.getUser(1L);
+        User testUser = dalUserStorage.getUser(updateUser.getId());
 
         assertThat(testUser).hasFieldOrPropertyWithValue("name","New Name");
         assertThat(testUser).hasFieldOrPropertyWithValue("login","New Login");
