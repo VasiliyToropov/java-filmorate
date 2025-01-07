@@ -57,12 +57,12 @@ public class DalUserService {
         return user;
     }
 
-    public void deleteFriend(Long id, Long friend_id) {
-        if (id == null || friend_id == null) {
+    public void deleteFriend(Long id, Long friendId) {
+        if (id == null || friendId == null) {
             throw new NotFoundException("Пользователи с такими id не найдены");
         }
         User user = userStorage.getUser(id);
-        User friendToUser = userStorage.getUser(friend_id);
+        User friendToUser = userStorage.getUser(friendId);
 
         if (user == null & friendToUser == null) {
             throw new NotFoundException("Пользователь с такими id не найдены");
@@ -70,9 +70,9 @@ public class DalUserService {
 
         String query = "DELETE FROM friends WHERE user_id = ? AND friend_id = ?";
 
-        jdbc.update(query, id, friend_id);
+        jdbc.update(query, id, friendId);
 
-        log.info("Пользователь " + id + " удалил из друзей " + friend_id);
+        log.info("Пользователь " + id + " удалил из друзей " + friendId);
     }
 
     public List<User> getFriends(Long id) {
