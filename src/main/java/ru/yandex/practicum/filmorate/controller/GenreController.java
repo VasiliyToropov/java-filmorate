@@ -13,8 +13,8 @@ import java.util.List;
 @RestController
 @RequestMapping("/genres")
 @RequiredArgsConstructor
-
 public class GenreController {
+
     private final DalGenreStorage dalGenreStorage;
 
     @GetMapping

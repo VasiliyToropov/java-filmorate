@@ -23,7 +23,6 @@ import java.sql.PreparedStatement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Repository
@@ -120,6 +119,11 @@ public class FilmRepository {
 
         film.setId(keyHolder.getKey().longValue());
 
+        return addInGenresForFilms(film);
+    }
+
+    // Метод для добавления жанров в таблицу и в объект Film
+    public Film addInGenresForFilms(Film film) {
         //Добавляем ID жанров в таблицу genresForFilms
         List<Genre> filmGenres = film.getGenres();
 
@@ -129,7 +133,7 @@ public class FilmRepository {
 
         //Удаляем дубликаты
         List<Genre> filmGenresWithoutDublicates;
-        filmGenresWithoutDublicates = filmGenres.stream().distinct().collect(Collectors.toList());
+        filmGenresWithoutDublicates = filmGenres.stream().distinct().toList();
 
         for (int i = 0; i < filmGenresWithoutDublicates.size(); i++) {
             String queryForGenres = "INSERT into genresForFilms(film_id, genre_id) VALUES (?, ?)";
