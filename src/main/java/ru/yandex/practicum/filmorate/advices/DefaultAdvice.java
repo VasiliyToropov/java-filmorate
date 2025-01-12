@@ -14,7 +14,7 @@ public class DefaultAdvice {
     @ExceptionHandler(NotFoundException.class)
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public Map<String, String> handleFilmNotFound(final NotFoundException e) {
-        return Map.of("error", "Фильм с таким id не найден");
+        return Map.of("error", "Объект не найден");
     }
 
     @ExceptionHandler(ValidationException.class)
